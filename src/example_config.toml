@@ -1,0 +1,23 @@
+[Name]
+enclosure = "§"
+start = "%{color:#0F5D56;font-weight:bold}"
+end = "%"
+multiline = false
+
+[important]
+enclosure = "$"
+start = "%{color:#ff4100;font-weight:bold}"
+end = "%"
+multiline = false
+
+[time]
+enclosure = "##"
+start = "%{color:#124d00}"
+end = "%"
+multiline = false
+
+[place]
+enclosure = "&"
+start = "%{color:#09112e;font-weight:bold}"
+end = "%"
+multiline = false
