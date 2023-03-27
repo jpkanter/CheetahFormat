@@ -24,6 +24,21 @@ import pyperclip
 
 from formater import Formater
 
+
+def filter_lines(filters: list, insert_in: str):
+    all_is_text = pyperclip.paste()
+    lines = str(all_is_text).split("\n")
+    out = ""
+    for line in lines:
+        if line.strip() == "":
+            continue
+        for one_filter in filters:
+            if one_filter in line:
+                continue
+        out += insert_in.format(line)
+    pyperclip.copy(out)
+
+
 if __name__ == "__main__":
     """
     Default module uses clipboard as source for the formatting, will probably use default if not otherwise specified
