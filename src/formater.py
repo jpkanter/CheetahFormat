@@ -24,7 +24,8 @@
 import tomli
 import logging
 import re
-import os
+from inspect import getsourcefile
+from os.path import abspath, dirname
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +55,7 @@ class Formater:
                 logging.warn(f"{e} - Provided Path not found, Fallback to default")
                 fallback = True
         if not path_or_data or fallback:
-            local = os.path.dirname(os.path.abspath(__file__))
+            local = dirname(abspath(getsourcefile(lambda:0)))
             with open(f"{local}/example_config.toml", "br") as that:
                 pre_config = tomli.load(that)
         if pre_config:
