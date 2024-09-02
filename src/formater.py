@@ -24,6 +24,7 @@
 import tomli
 import logging
 import re
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -43,11 +44,18 @@ class Formater:
         """
         # insert checks for integrity here
         pre_config = None
-        if not path_or_data:
-            with open("example_config.toml", "br") as that:
-                pre_config = tomli.load(that)
+        fallback = False
+
         if isinstance(path_or_data, str):
-            with open("example_config.toml", "br") as that:
+            try:
+                with open(path_or_data, "br") as that:
+                    pre_config = tomli.load(that)
+            except FileNotFoundError as e:
+                logging.warn(f"{e} - Provided Path not found, Fallback to default")
+                fallback = True
+        if not path_or_data or fallback:
+            local = os.path.dirname(os.path.abspath(__file__))
+            with open(f"{local}/example_config.toml", "br") as that:
                 pre_config = tomli.load(that)
         if pre_config:
             keys = ['enclosure', 'start', 'end', 'multiline']

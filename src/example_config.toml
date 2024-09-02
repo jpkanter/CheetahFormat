@@ -1,3 +1,4 @@
+# Formatting for Redmine Textile
 [Name]
 enclosure = "§"
 start = "%{color:#0F5D56;font-weight:bold}"

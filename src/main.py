@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 # coding: utf-8
-
 # Copyright 2022 by JPKanter, <kanter@ub.uni-leipzig.de>
 #
 # This file is part of CheetahFormat.
@@ -17,13 +16,14 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+#v
 # @license GPL-3.0-only <https://www.gnu.org/licenses/gpl-3.0.en.html>
 
 import pyperclip
+import logging
+import argparse
 
 from formater import Formater
-
 
 def filter_lines(filters: list, insert_in: str):
     all_is_text = pyperclip.paste()
@@ -43,10 +43,27 @@ if __name__ == "__main__":
     """
     Default module uses clipboard as source for the formatting, will probably use default if not otherwise specified
     """
-    duck = Formater()
+    parser = argparse.ArgumentParser(
+        description="Cheetah Formater  - Quick Formater for some texts",
+        usage="main.py --config [configPath]",
+        epilog="Changes whatever text currently is in your clipboard.",
+        prefix_chars="-"
+    )
+    parser.add_argument("--config", type=str, help="path to individual *.toml")
+    args = parser.parse_args()
+
+    #print("[Cheetah] CWD" + os.getcwd())
+    if args.config:
+        logging.info(f"[Cheetah] Config Path: {args.config}")
+        config_path = args.config
+    else:
+        config_path = None
+
+    duck = Formater(config_path)
     all_is_text = pyperclip.paste()
     lines = str(all_is_text).split("\n")
     yarn = ""
     for line in lines:
         yarn += duck.format_line(line) + "\n"
     pyperclip.copy(yarn)
+    logging.info("[Cheetah] Done")
