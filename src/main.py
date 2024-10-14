@@ -23,7 +23,7 @@ import pyperclip
 import logging
 import argparse
 
-from formater import Formater
+from formater import Formater, bcolors
 
 def filter_lines(filters: list, insert_in: str):
     all_is_text = pyperclip.paste()
@@ -51,6 +51,7 @@ if __name__ == "__main__":
     )
     parser.add_argument("--config", type=str, help="path to individual *.toml")
     parser.add_argument("--tags", action='store_true', help="list current used replacement tags")
+    parser.add_argument("--debug", action='store_true', help="Sets logging to debug")
     args = parser.parse_args()
 
     #print("[Cheetah] CWD" + os.getcwd())
@@ -66,11 +67,25 @@ if __name__ == "__main__":
             print(each)
         exit(0)
 
+    if args.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+
+    logging.debug("Args:" + repr(args))
+
     duck = Formater(config_path)
     all_is_text = pyperclip.paste()
+    logging.debug("Paste: " + str(len(all_is_text)))
+    logging.debug("Excerpt: " + str(all_is_text[:50]))
     lines = str(all_is_text).split("\n")
+    logging.debug("Lines: " + str(len(lines)))
     yarn = ""
+    onlyonce = False  # the most inelegant way to avoid getting more new lines every time
+    carriage = ""
     for line in lines:
-        yarn += duck.format_line(line) + "\n"
-    pyperclip.copy(yarn)
+        yarn += carriage + duck.format_line(line)
+        if not onlyonce:
+            onlyonce = True
+            carriage = "\n"
+    pyperclip.copy(yarn)  # todo: exception handling
+    print(f"{bcolors.OKBLUE}Cheetah Formater:{bcolors.ENDC} Changed clipboard text, {bcolors.OKGREEN}{len(lines)}{bcolors.ENDC} lines.")
     logging.info("[Cheetah] Done")

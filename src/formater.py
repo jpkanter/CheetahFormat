@@ -31,6 +31,9 @@ logger = logging.getLogger(__name__)
 
 
 class bcolors:
+    """
+    Some color codes lifted from a Stack Overflow post I forgot which lifted it from Blender it seems
+    """
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
     OKCYAN = '\033[96m'
@@ -43,7 +46,12 @@ class bcolors:
 
 
 class Formater:
-
+    """
+    The actual implementation of the formatter, uses a very primitiv (in terms of style not basic class)
+    to replace parts of string for another. I originally build this for my meetings notes for Redmine
+    which are written in Textile, but colors are a pain there, but I like colors, so I made a handy
+    shortcut to write while jotting down the meeting talking points like I can do in Markdown
+    """
     def __init__(self, config=None):
         self.config = self.import_config(config)
 
@@ -67,7 +75,7 @@ class Formater:
                 logging.warn(f"{e} - Provided Path not found, Fallback to default")
                 fallback = True
         if not path_or_data or fallback:
-            local = dirname(abspath(getsourcefile(lambda:0)))
+            local = dirname(abspath(getsourcefile(lambda: 0)))
             with open(f"{local}/example_config.toml", "br") as that:
                 pre_config = tomli.load(that)
         if pre_config:
@@ -86,15 +94,17 @@ class Formater:
             lines.append(line)
         return lines
 
-    def format_line(self, line: str) -> dict:
+    def format_line(self, line: str) -> str:
         """
-        Formats a single line according to the
+        Formats a single line according to the config file
         :param str line: a singular line of string, hopefully without any line denominators
         :return: the formated string
         :rtype: str
         """
         for key, value in self.config.items():
             if value['multiline']:
+                # todo: write actual multi line support you lazy bastard
+                logging.warn(f"Multiline match '{value['enclosure']}' found, feature not implemented")
                 continue  # single line function cannot support multiline
             logger.debug(f"OneLine>>Key: {key}")
             search = "\\{}(.+?)\\{}".format(value['enclosure'], value['enclosure'])
