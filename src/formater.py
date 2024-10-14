@@ -30,6 +30,18 @@ from os.path import abspath, dirname
 logger = logging.getLogger(__name__)
 
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
 class Formater:
 
     def __init__(self, config=None):
@@ -63,6 +75,16 @@ class Formater:
             if all(key in expression for key in keys for expression in pre_config.values()):
                 return pre_config  # as config
         raise ValueError("Formater: loading of config failed")
+
+    def list_filters(self) -> list[str]:
+        lines = []
+        for key, value in self.config.items():
+            line =  f"{bcolors.BOLD}{key}{bcolors.ENDC}: "
+            line += f"{bcolors.OKBLUE}{value['enclosure']}{bcolors.ENDC}"
+            line += "your text"
+            line += f"{bcolors.OKCYAN}{value['enclosure']}{bcolors.ENDC}"
+            lines.append(line)
+        return lines
 
     def format_line(self, line: str) -> dict:
         """

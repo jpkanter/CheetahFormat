@@ -50,6 +50,7 @@ if __name__ == "__main__":
         prefix_chars="-"
     )
     parser.add_argument("--config", type=str, help="path to individual *.toml")
+    parser.add_argument("--tags", action='store_true', help="list current used replacement tags")
     args = parser.parse_args()
 
     #print("[Cheetah] CWD" + os.getcwd())
@@ -58,6 +59,12 @@ if __name__ == "__main__":
         config_path = args.config
     else:
         config_path = None
+
+    if args.tags:
+        goose = Formater(config_path)
+        for each in goose.list_filters():
+            print(each)
+        exit(0)
 
     duck = Formater(config_path)
     all_is_text = pyperclip.paste()
